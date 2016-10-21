@@ -72,6 +72,13 @@ class Card {
     private Rank rank;
 
     /**
+     * Default constructor.
+     */
+    Card(){
+        suit = null;
+        rank = null;
+    }
+    /**
      * Constructor for the Card class.
      * @param _rank rank of the card.
      * @param _suit suit of the card.
