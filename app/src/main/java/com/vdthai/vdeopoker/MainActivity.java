@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
      */
     public void clearHold(){
         for( int i = 0; i < 5; i++ ){
-            Log.d("DEBUG", "Clear i = " + Integer.toString(i));
             TextView imgView = (TextView)findViewById(HOLD_FIELD[i]);
             imgView.setText("");
             TextView winTxt = (TextView)findViewById(R.id.resultTxt);
@@ -70,9 +69,14 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
     /**
      * Updates the cash view.
      */
-    public void updateCash( ){
+    public void updateCash(){
         TextView cashView = (TextView)findViewById( R.id.cashView );
         cashView.setText("CASH: $" + Integer.toString( presenter.getCash() ) );
+    }
+
+    public void updateBet( int bet ){
+        TextView betView = (TextView)findViewById( R.id.betView );
+        betView.setText("BET: $" + Integer.toString( bet ) );
     }
 
     @Override
@@ -83,6 +87,9 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
 
         TextView cashView = (TextView)findViewById(R.id.cashView);
         cashView.setText("CASH: $" + Integer.toString(presenter.getCash()));
+        TextView betView = (TextView)findViewById(R.id.betView);
+        betView.setText("BET: $1");
+
         Button dealButton = (Button)findViewById(R.id.dealButton);
         dealButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,11 +106,11 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
                     TextView handView = (TextView)findViewById(R.id.resultTxt);
                     if( hand.first > 0 ){
                         handView.setText( hand.second + "! Win: $" + hand.first );
-                        updateCash( );
                     } else {
                         handView.setText( "NO WIN!" );
                     }
                 }
+                updateCash();
             }
         });
 
@@ -157,7 +164,8 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
         betOneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: Set bet one.
+                updateBet( presenter.betOne() );
+                // Update bet board and betView
             }
         });
 
@@ -168,7 +176,8 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
         betMaxButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: Set bet max.
+                updateBet( presenter.betMax() );
+                // Update bet board and betView
             }
         });
     }

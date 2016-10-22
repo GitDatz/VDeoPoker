@@ -333,8 +333,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textColor="#fff200"
-            android:textAlignment="center"
-            android:text="BET: "/>
+            android:textAlignment="center"/>
 
         <TextView
             android:layout_width="80dp"

@@ -38,6 +38,22 @@ class Presenter {
     }
 
     /**
+     * Increases bet by 1.
+     * @return the current bet.
+     */
+    int betOne(){
+        return game.setBet();
+    }
+
+    /**
+     * Set bet max.
+     * @return max amount to bet.
+     */
+    int betMax(){
+        return game.setBetMax();
+    }
+
+    /**
      * Sets the cards to keep (hold).
      * Valid positions: 0 .. 4
      * @param _holdPos the position for the card to hold.

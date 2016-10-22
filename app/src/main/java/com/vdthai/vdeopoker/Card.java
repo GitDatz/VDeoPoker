@@ -108,7 +108,7 @@ class Card {
      * Getter for the suit in String.
      * @return a String of the suit of the card.
      */
-    private String getSuit(){
+    String getSuit(){
         return suit.getSuit();
     }
 }

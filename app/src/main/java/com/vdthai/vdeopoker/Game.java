@@ -1,5 +1,6 @@
 package com.vdthai.vdeopoker;
 
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ class Game {
     private List<Card> cardList;
     private List<Boolean> holdCards;
     private int cash;
+    private int bet;
     private GAME_STATE gameState;
 
     /**
@@ -34,6 +36,7 @@ class Game {
         gameState = GAME_STATE.INIT;
         cardList = new ArrayList<>(5);
         cash = 100;
+        bet = 1;
         holdCards = new ArrayList<>();
         for( int i = 0; i < 5; i++ ){
             holdCards.add( i, false );
@@ -61,6 +64,7 @@ class Game {
             for( int i = 0; i < 5; i++ ){
                 cardList.add( deck.drawCard() );
             }
+            setCash( -bet );
             gameState = GAME_STATE.DEAL;
         } else {
             for( int i = 0; i < 5; i++ ){
@@ -87,6 +91,28 @@ class Game {
      */
     int getCash(){
         return cash;
+    }
+
+    /**
+     * Setter for bet one.
+     * Valid bets: 1, 2, 3, 4, 5
+     * @return amount to how much to bet.
+     */
+    int setBet(){
+        bet++;
+        if( bet > 5 ){
+            bet = 1;
+        }
+        return bet;
+    }
+
+    /**
+     * Setter for bet max.
+     * @return max bet allowed.
+     */
+    int setBetMax(){
+        bet = 5;
+        return bet;
     }
 
     /**
@@ -167,7 +193,7 @@ class Game {
                 currentHand = "STRAIGHT";
                 winCash += 20;
             }
-        } else if( rankList.contains(5)) {
+        } else if( suitList.contains(5)) {
             currentHand = "FLUSH";
             winCash += 35;
         } else if( rankList.contains(4) ){
