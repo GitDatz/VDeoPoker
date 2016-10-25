@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">VDeoPoker</string>
+    <string name="holdText">HOLD</string>
+    <string name="betText">BET: $</string>
+    <string name="cashText">CASH: $</string>
+    <string name="noWinText">No win!</string>
 </resources>

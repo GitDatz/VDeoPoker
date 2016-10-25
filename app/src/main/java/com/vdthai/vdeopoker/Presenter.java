@@ -1,7 +1,5 @@
 package com.vdthai.vdeopoker;
 
-import android.util.Pair;
-
 import java.util.List;
 
 /**
@@ -38,6 +36,14 @@ class Presenter {
     }
 
     /**
+     * Getter for the round's result.
+     * @return string of the hand. Empty if false.
+     */
+    String getResultString(){
+        return game.getResultString();
+    }
+
+    /**
      * Increases bet by 1.
      * @return the current bet.
      */
@@ -66,7 +72,7 @@ class Presenter {
      * Check if the final hand is a winning hand.
      * @return pair of int (amount of cash won) and string (winning hand).
      */
-    Pair<Integer, String> win(){
+    Boolean win(){
         return game.checkHand();
     }
 

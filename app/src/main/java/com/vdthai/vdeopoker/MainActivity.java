@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
         if( holdTxt.getText().equals("HOLD") ){
             holdTxt.setText("");
         } else {
-            holdTxt.setText("HOLD");
+            holdTxt.setText( R.string.holdText );
         }
     }
 
@@ -71,12 +71,16 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
      */
     public void updateCash(){
         TextView cashView = (TextView)findViewById( R.id.cashView );
-        cashView.setText("CASH: $" + Integer.toString( presenter.getCash() ) );
+        cashView.setText( R.string.cashText + Integer.toString( presenter.getCash() ) );
     }
 
+    /**
+     * Updated the bet view.
+     * @param bet the bet.
+     */
     public void updateBet( int bet ){
         TextView betView = (TextView)findViewById( R.id.betView );
-        betView.setText("BET: $" + Integer.toString( bet ) );
+        betView.setText( R.string.betText + Integer.toString( bet ) );
     }
 
     @Override
@@ -85,10 +89,8 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
         setContentView(R.layout.activity_main);
         presenter = new Presenter(this);
 
-        TextView cashView = (TextView)findViewById(R.id.cashView);
-        cashView.setText("CASH: $" + Integer.toString(presenter.getCash()));
-        TextView betView = (TextView)findViewById(R.id.betView);
-        betView.setText("BET: $1");
+        updateCash();
+        updateBet( 1 );
 
         Button dealButton = (Button)findViewById(R.id.dealButton);
         dealButton.setOnClickListener(new View.OnClickListener() {
@@ -102,12 +104,11 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
                 if( !presenter.endGame() ){
                     clearHold();
                 } else {
-                    Pair<Integer, String> hand = presenter.win();
                     TextView handView = (TextView)findViewById(R.id.resultTxt);
-                    if( hand.first > 0 ){
-                        handView.setText( hand.second + "! Win: $" + hand.first );
+                    if( presenter.win() ){
+                        handView.setText( presenter.win() + "! Win: $" + presenter.getResultString() );
                     } else {
-                        handView.setText( "NO WIN!" );
+                        handView.setText( R.string.noWinText );
                     }
                 }
                 updateCash();
