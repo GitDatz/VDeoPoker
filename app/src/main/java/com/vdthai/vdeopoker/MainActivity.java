@@ -1,5 +1,7 @@
 package com.vdthai.vdeopoker;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +9,7 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -15,6 +18,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements Presenter.View {
 
     private Presenter presenter;
+    private List<ScoreBoard> handScores;
+    //private ScoreViewAdapter scoreViewAdapter;
 
     /**
      * Drawable card icons in a matrix of drawables.
@@ -47,8 +52,6 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
         for( int i = 0; i < 5; i++ ){
             TextView imgView = (TextView)findViewById(HOLD_FIELD[i]);
             imgView.setText("");
-            TextView winTxt = (TextView)findViewById(R.id.resultTxt);
-            winTxt.setText("");
         }
     }
 
@@ -71,16 +74,16 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
      */
     public void updateCash(){
         TextView cashView = (TextView)findViewById( R.id.cashView );
-        cashView.setText( R.string.cashText + Integer.toString( presenter.getCash() ) );
+        cashView.setText( "CASH: $" + Integer.toString( presenter.getCash() ) );
     }
 
     /**
      * Updated the bet view.
-     * @param bet the bet.
+     * @param bet the bet.itt
      */
     public void updateBet( int bet ){
         TextView betView = (TextView)findViewById( R.id.betView );
-        betView.setText( R.string.betText + Integer.toString( bet ) );
+        betView.setText( "BET: $" + Integer.toString( bet ) );
     }
 
     @Override
@@ -88,6 +91,12 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         presenter = new Presenter(this);
+
+        handScores = new ArrayList<>();
+        ListView scoreListView = (ListView)findViewById( R.id.scoreListView );
+        ScoreViewAdapter scoreViewAdapter = new ScoreViewAdapter( this, handScores );
+        scoreListView.setAdapter( scoreViewAdapter );
+        fillScoreBoard();
 
         updateCash();
         updateBet( 1 );
@@ -101,14 +110,30 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
                     ImageView imgView = (ImageView)findViewById( CARD_FIELD[i] );
                     imgView.setImageResource( DECK[ dealCards.get(i).getSuitRank()-1 ][ dealCards.get(i).getRank()-1 ] );
                 }
+                // Check if round has ended.
                 if( !presenter.endGame() ){
                     clearHold();
                 } else {
-                    TextView handView = (TextView)findViewById(R.id.resultTxt);
                     if( presenter.win() ){
-                        handView.setText( presenter.win() + "! Win: $" + presenter.getResultString() );
-                    } else {
-                        handView.setText( R.string.noWinText );
+                        AlertDialog.Builder winBuilder = new AlertDialog.Builder( MainActivity.this );
+                        winBuilder.setTitle( "Win! " + presenter.getResultString() );
+                        winBuilder.setMessage( "Do you want to double?" );
+                        winBuilder.setCancelable( true );
+                        winBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // Call double game
+                                dialogInterface.cancel();
+                            }
+                        });
+                        winBuilder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                        AlertDialog winDialog = winBuilder.create();
+                        winDialog.show();
                     }
                 }
                 updateCash();
@@ -181,5 +206,39 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
                 // Update bet board and betView
             }
         });
+    }
+
+    /**
+     * Fills the score board with content.
+     */
+    private void fillScoreBoard(){
+        ScoreBoard royalFlush, straightFlush, fourOfKind, fullHouse, flush, straight, threeOfKind, twoPair, jacksOrBetter;
+
+        royalFlush = new ScoreBoard("Royal Flush", 250, 500, 750, 1000 );
+        handScores.add( royalFlush );
+
+        straightFlush = new ScoreBoard("Straight Flush", 150, 300, 450, 600 );
+        handScores.add( straightFlush );
+
+        fourOfKind = new ScoreBoard("Four of a Kind", 100, 200, 300, 400 );
+        handScores.add( fourOfKind );
+
+        fullHouse = new ScoreBoard("Full House", 50, 100, 150, 200 );
+        handScores.add( fullHouse );
+
+        flush = new ScoreBoard("Flush", 25, 50, 75, 100 );
+        handScores.add( flush );
+
+        straight = new ScoreBoard("Straight", 10, 20, 30, 40 );
+        handScores.add( straight );
+
+        threeOfKind = new ScoreBoard("Three of a Kind", 5, 10, 15, 20 );
+        handScores.add( threeOfKind );
+
+        twoPair = new ScoreBoard("Two Pair", 3, 6, 9, 12 );
+        handScores.add( twoPair );
+
+        jacksOrBetter = new ScoreBoard("Jacks or Better", 1, 2, 3, 4 );
+        handScores.add( jacksOrBetter );
     }
 }

@@ -35,7 +35,7 @@ class Game {
         checkHand = new CheckHand();
         deck.shuffle();
         gameState = GAME_STATE.INIT;
-        cardList = new ArrayList<>(5);
+        cardList = new ArrayList<>();
         cash = 100;
         bet = 1;
         holdCards = new ArrayList<>();

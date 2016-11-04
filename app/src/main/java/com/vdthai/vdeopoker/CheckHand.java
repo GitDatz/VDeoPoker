@@ -31,6 +31,19 @@ public class CheckHand {
     }
 
     /**
+     * Resets the list values to 0.
+     */
+    void resetLists(){
+        for( int i = 0; i < 14; i++ ){
+            rankList.set(i,0);
+        }
+
+        for( int i = 0; i < 5; i++ ){
+            suitList.set(i,0);
+        }
+    }
+
+    /**
      * Function to check the hand.
      * Algorithm: Keep a list of suits and a list of ranks filled with 0.
      *            Then check if there exists any given number in the lists.
@@ -41,14 +54,14 @@ public class CheckHand {
     Pair<Integer, String> checkHand( List<Card> cardList ) {
         String currentHand = "";
         int winCash = 0;
-
+        resetLists();
         /**
          * Loop the cardList and increment based on the rank and suit.
          * Check the Card class for the valid values.
          */
         for( Card card : cardList ){
             rankList.set(card.getRank(), rankList.get(card.getRank()) + 1);
-            suitList.set(card.getSuitRank(), rankList.get(card.getSuitRank()) + 1);
+            suitList.set(card.getSuitRank(), suitList.get(card.getSuitRank()) + 1);
         }
 
         /**
@@ -57,38 +70,38 @@ public class CheckHand {
         if( isStraight( cardList ) ){
             if( suitList.contains(5) ){
                 if( rankList.get(0) == 1 && rankList.get(12) == 1 ){
-                    currentHand = "ROYAL FLUSH";
+                    currentHand = "Royal Flush";
                     winCash += 250;
                 } else {
-                    currentHand = "STRAIGHT FLUSH";
+                    currentHand = "Straight Flush";
                     winCash += 150;
                 }
             } else {
-                currentHand = "STRAIGHT";
+                currentHand = "Straight";
                 winCash += 20;
             }
         } else if( suitList.contains(5)) {
-            currentHand = "FLUSH";
+            currentHand = "Flush";
             winCash += 35;
         } else if( rankList.contains(4) ){
-            currentHand = "FOUR OF A KIND";
+            currentHand = "Four of a Kind";
             winCash += 100;
         } else if( rankList.contains(3) && rankList.contains(2) ){
-            currentHand = "FULL HOUSE";
+            currentHand = "Full House";
             winCash += 50;
         } else if( rankList.contains(3) ){
-            currentHand = "THREE OF A KIND";
+            currentHand = "Three of a Kind";
             winCash += 10;
         } else if( rankList.contains(2) && ( Collections.frequency( rankList, 2 ) > 1 ) ){ // Two pair?
-            currentHand = "TWO PAIR";
+            currentHand = "Two Pair";
             winCash += 5;
         } else if( rankList.contains(2) ){ // Get value of element in array that contains 2, compare to JJ
             if( rankList.indexOf( 2 ) == 0 || rankList.indexOf( 2 ) > 9 ){
-                currentHand = "JACKS OR BETTER";
+                currentHand = "Jacks or Better";
                 winCash += 1;
             }
         }
-        return new Pair<Integer, String>( winCash, currentHand );
+        return new Pair<>( winCash, currentHand );
     }
 
     /**

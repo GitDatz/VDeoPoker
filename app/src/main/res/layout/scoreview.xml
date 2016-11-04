@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/relativeScoreLayout">
+
+    <TextView
+        android:id="@+id/handText"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:text="Hand"
+        android:textColor="#fff200"
+        android:layout_weight="2"
+        android:background="@drawable/score_line_shape"
+        android:paddingStart="4dp"
+        android:paddingLeft="4dp"
+        android:paddingEnd="4dp">
+    </TextView>
+
+    <TextView
+        android:id="@+id/betOneText"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:text="BetOne"
+        android:textColor="#fff200"
+        android:layout_weight="1"
+        android:background="@drawable/score_line_shape"
+        android:layout_gravity="end"
+        android:textAlignment="textEnd"
+        android:paddingStart="4dp"
+        android:paddingRight="4dp"
+        android:paddingEnd="4dp">
+    </TextView>
+
+    <TextView
+        android:id="@+id/betTwoText"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:text="BetTwo"
+        android:textColor="#fff200"
+        android:layout_weight="1"
+        android:background="@drawable/score_line_shape"
+        android:layout_gravity="end"
+        android:textAlignment="textEnd"
+        android:paddingStart="4dp"
+        android:paddingRight="4dp"
+        android:paddingEnd="4dp">
+    </TextView>
+
+    <TextView
+        android:id="@+id/betThreeText"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:text="BetThree"
+        android:textColor="#fff200"
+        android:layout_weight="1"
+        android:background="@drawable/score_line_shape"
+        android:layout_gravity="end"
+        android:textAlignment="textEnd"
+        android:paddingStart="4dp"
+        android:paddingRight="4dp"
+        android:paddingEnd="4dp">
+    </TextView>
+
+    <TextView
+        android:id="@+id/betFourText"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:text="BetFour"
+        android:textColor="#fff200"
+        android:layout_weight="1"
+        android:background="@drawable/score_line_shape"
+        android:layout_gravity="end"
+        android:textAlignment="textEnd"
+        android:paddingStart="4dp"
+        android:paddingRight="4dp"
+        android:paddingEnd="4dp">
+    </TextView>
+
+</LinearLayout>
