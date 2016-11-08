@@ -115,18 +115,24 @@
 
         <Button
             android:text="DEAL"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_shape"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/dealButton"/>
 
         <Button
             android:text="BET ONE"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_shape"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/betOneButton"/>
 
         <Button
             android:text="BET MAX"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_shape"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/betMaxButton" />

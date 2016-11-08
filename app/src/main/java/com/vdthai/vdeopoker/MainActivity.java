@@ -19,7 +19,6 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
 
     private Presenter presenter;
     private List<ScoreBoard> handScores;
-    //private ScoreViewAdapter scoreViewAdapter;
 
     /**
      * Drawable card icons in a matrix of drawables.
@@ -191,7 +190,6 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
             @Override
             public void onClick(View view) {
                 updateBet( presenter.betOne() );
-                // Update bet board and betView
             }
         });
 
@@ -203,7 +201,6 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
             @Override
             public void onClick(View view) {
                 updateBet( presenter.betMax() );
-                // Update bet board and betView
             }
         });
     }
