@@ -2,4 +2,7 @@
     <string name="app_name">VDeoPoker</string>
     <string name="holdText">HOLD</string>
     <string name="noWinText">No win!</string>
+    <string name="betOneText">BET ONE</string>
+    <string name="betMaxText">BET MAX</string>
+    <string name="dealText">DEAL</string>
 </resources>

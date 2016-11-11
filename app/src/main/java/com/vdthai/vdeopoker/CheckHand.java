@@ -33,7 +33,7 @@ public class CheckHand {
     /**
      * Resets the list values to 0.
      */
-    void resetLists(){
+    private void resetLists(){
         for( int i = 0; i < 14; i++ ){
             rankList.set(i,0);
         }

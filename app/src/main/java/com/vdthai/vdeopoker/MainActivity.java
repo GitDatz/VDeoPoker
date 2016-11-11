@@ -110,30 +110,26 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
                     imgView.setImageResource( DECK[ dealCards.get(i).getSuitRank()-1 ][ dealCards.get(i).getRank()-1 ] );
                 }
                 // Check if round has ended.
-                if( !presenter.endGame() ){
-                    clearHold();
-                } else {
-                    if( presenter.win() ){
-                        AlertDialog.Builder winBuilder = new AlertDialog.Builder( MainActivity.this );
-                        winBuilder.setTitle( "Win! " + presenter.getResultString() );
-                        winBuilder.setMessage( "Do you want to double?" );
-                        winBuilder.setCancelable( true );
-                        winBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                // Call double game
-                                dialogInterface.cancel();
-                            }
-                        });
-                        winBuilder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        });
-                        AlertDialog winDialog = winBuilder.create();
-                        winDialog.show();
-                    }
+                if( presenter.checkRound() ){
+                    AlertDialog.Builder winBuilder = new AlertDialog.Builder( MainActivity.this );
+                    winBuilder.setTitle( "Win! " + presenter.getResultString() );
+                    winBuilder.setMessage( "Do you want to double?" );
+                    winBuilder.setCancelable( true );
+                    winBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // Call double game
+                            dialogInterface.cancel();
+                        }
+                    });
+                    winBuilder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
+                    AlertDialog winDialog = winBuilder.create();
+                    winDialog.show();
                 }
                 updateCash();
             }

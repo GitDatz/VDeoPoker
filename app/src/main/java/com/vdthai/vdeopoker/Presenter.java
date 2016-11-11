@@ -70,24 +70,23 @@ class Presenter {
 
     /**
      * Check if the final hand is a winning hand.
-     * @return pair of int (amount of cash won) and string (winning hand).
+     * @return true if it is a winning hand.
      */
-    Boolean win(){
-        return game.checkHand();
-    }
-
-    /**
-     * Checks if the round has ended.
-     * @return true if game has ended.
-     */
-    boolean endGame() {
-        return game.isEndGame();
+    boolean checkRound(){
+        if( !game.isEndGame() ){
+            view.clearHold();
+        } else {
+            if( game.checkHand() ){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * Makes this an interface for the View to implement.
      */
     interface View {
-
+        void clearHold();
     }
 }
