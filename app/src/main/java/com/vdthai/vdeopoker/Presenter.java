@@ -1,5 +1,8 @@
 package com.vdthai.vdeopoker;
 
+import android.content.Context;
+import android.content.Intent;
+
 import java.util.List;
 
 /**
@@ -8,14 +11,16 @@ import java.util.List;
 
 class Presenter {
     View view;
+    Context context;
     Game game;
 
     /**
      * Constructor for the presenter.
      * @param _view the view.
      */
-    Presenter( View _view ){
+    Presenter( View _view, Context _context ){
         view = _view;
+        context = _context;
         game = new Game();
     }
 
@@ -70,17 +75,20 @@ class Presenter {
 
     /**
      * Check if the final hand is a winning hand.
-     * @return true if it is a winning hand.
      */
-    boolean checkRound(){
+    void checkRound(){
         if( !game.isEndGame() ){
             view.clearHold();
         } else {
             if( game.checkHand() ){
-                return true;
+                Intent intent = new Intent(context, DoubleUpActivity.class);
+                // Send information to Double Up activity
+                intent.putExtra("cash", game.getCash());
+                intent.putIntegerArrayListExtra("handRanks", game.getHandRanks());
+                intent.putIntegerArrayListExtra("handSuits", game.getHandSuits());
+                context.startActivity(intent);
             }
         }
-        return false;
     }
 
     /**

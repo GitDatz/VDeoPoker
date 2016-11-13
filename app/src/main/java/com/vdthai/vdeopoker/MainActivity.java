@@ -1,11 +1,7 @@
 package com.vdthai.vdeopoker;
 
-import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -89,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        presenter = new Presenter(this);
+        presenter = new Presenter(this, this);
 
         handScores = new ArrayList<>();
         ListView scoreListView = (ListView)findViewById( R.id.scoreListView );
@@ -110,27 +106,7 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
                     imgView.setImageResource( DECK[ dealCards.get(i).getSuitRank()-1 ][ dealCards.get(i).getRank()-1 ] );
                 }
                 // Check if round has ended.
-                if( presenter.checkRound() ){
-                    AlertDialog.Builder winBuilder = new AlertDialog.Builder( MainActivity.this );
-                    winBuilder.setTitle( "Win! " + presenter.getResultString() );
-                    winBuilder.setMessage( "Do you want to double?" );
-                    winBuilder.setCancelable( true );
-                    winBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            // Call double game
-                            dialogInterface.cancel();
-                        }
-                    });
-                    winBuilder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.cancel();
-                        }
-                    });
-                    AlertDialog winDialog = winBuilder.create();
-                    winDialog.show();
-                }
+                presenter.checkRound();
                 updateCash();
             }
         });

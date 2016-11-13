@@ -133,6 +133,22 @@ class Game {
         deck.reShuffle();
     }
 
+    ArrayList<Integer> getHandRanks(){
+        ArrayList<Integer> handRankList = new ArrayList<>();
+        for( Card card : cardList ){
+            handRankList.add( card.getRank() );
+        }
+        return handRankList;
+    }
+
+    ArrayList<Integer> getHandSuits(){
+        ArrayList<Integer> handSuitList = new ArrayList<>();
+        for( Card card : cardList ){
+            handSuitList.add( card.getSuitRank() );
+        }
+        return handSuitList;
+    }
+
     /**
      * Hold the card given a card position.
      * @param _cardPos the card position.
