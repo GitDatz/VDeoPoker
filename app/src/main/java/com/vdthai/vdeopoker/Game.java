@@ -1,5 +1,6 @@
 package com.vdthai.vdeopoker;
 
+import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -10,7 +11,6 @@ import java.util.List;
  */
 
 class Game {
-
     /**
      * Enum GAME_STATE: keep the state of the game.
      */
@@ -24,6 +24,7 @@ class Game {
     private List<Boolean> holdCards;
     private int cash;
     private int bet;
+    private int winSum;
     private GAME_STATE gameState;
     private String resultString;
 
@@ -38,6 +39,7 @@ class Game {
         cardList = new ArrayList<>();
         cash = 100;
         bet = 1;
+        winSum = 0;
         holdCards = new ArrayList<>();
         for( int i = 0; i < 5; i++ ){
             holdCards.add( i, false );
@@ -82,10 +84,10 @@ class Game {
 
     /**
      * Setter for the player's cash.
-     * @param _cash the amount cash to be set.
+     * @param cash the amount cash to be set.
      */
-    private void setCash( int _cash ){
-        cash += _cash;
+    void setCash( int cash ){
+        this.cash += cash;
     }
 
     /**
@@ -94,6 +96,23 @@ class Game {
      */
     int getCash(){
         return cash;
+    }
+
+    /**
+     * Setter for the amounts won.
+     * @param winSum the amount of cash won.
+     */
+    void setWinSum( int winSum ){
+        Log.d("DEBUG", "SetWinSum!");
+        this.winSum = winSum;
+    }
+
+    /**
+     * Getter for the amounts won.
+     * @return the amount cash won.
+     */
+    int getWinSum(){
+        return winSum;
     }
 
     /**
@@ -133,6 +152,10 @@ class Game {
         deck.reShuffle();
     }
 
+    /**
+     * Get ranks of the player's hand. For displaying correct cards.
+     * @return ArrayList of ranks.
+     */
     ArrayList<Integer> getHandRanks(){
         ArrayList<Integer> handRankList = new ArrayList<>();
         for( Card card : cardList ){
@@ -141,6 +164,10 @@ class Game {
         return handRankList;
     }
 
+    /**
+     * Get suit values of the player's hand. For displaying correct cards.
+     * @return ArrayList of suit values.
+     */
     ArrayList<Integer> getHandSuits(){
         ArrayList<Integer> handSuitList = new ArrayList<>();
         for( Card card : cardList ){
@@ -151,13 +178,13 @@ class Game {
 
     /**
      * Hold the card given a card position.
-     * @param _cardPos the card position.
+     * @param cardPos the card position.
      */
-    void holdCard( int _cardPos ){
-        if( holdCards.get( _cardPos ) ){
-            holdCards.set( _cardPos, false );
+    void holdCard( int cardPos ){
+        if( holdCards.get( cardPos ) ){
+            holdCards.set( cardPos, false );
         } else {
-            holdCards.set( _cardPos, true );
+            holdCards.set( cardPos, true );
         }
     }
 
@@ -178,6 +205,7 @@ class Game {
         if( handPair.first > 0 ){
             resultString = handPair.second;
             setCash( handPair.first );
+            setWinSum( handPair.first );
             return true;
         }
         return false;

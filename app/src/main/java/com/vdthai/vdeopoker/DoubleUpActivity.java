@@ -1,5 +1,7 @@
 package com.vdthai.vdeopoker;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -13,7 +15,8 @@ import java.util.ArrayList;
  * Created by vdthai on 2016-11-11.
  */
 
-public class DoubleUpActivity extends AppCompatActivity {
+public class DoubleUpActivity extends AppCompatActivity implements DoubleUpPresenter.View {
+    private DoubleUpPresenter doubleUpPresenter;
     private int cash;
     private int winSum;
     private String winHand;
@@ -38,6 +41,26 @@ public class DoubleUpActivity extends AppCompatActivity {
     };
 
     /**
+     * Hide the Yes- and No-buttons.
+     */
+    void hideYesNoButtons(){
+        Button yesButton = (Button)findViewById( R.id.yesButton );
+        yesButton.setVisibility(View.INVISIBLE);
+        Button noButton = (Button)findViewById( R.id.noButton );
+        noButton.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * Show the Yes- and No-buttons.
+     */
+    void showYesNoButtons(){
+        Button yesButton = (Button)findViewById( R.id.yesButton );
+        yesButton.setVisibility(View.VISIBLE);
+        Button noButton = (Button)findViewById( R.id.noButton );
+        noButton.setVisibility(View.VISIBLE);
+    }
+
+    /**
      * Sets winning hand to show initially.
      */
     void setWinningHand(){
@@ -47,23 +70,101 @@ public class DoubleUpActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_double);
+    /**
+     * Set the member variables needed for initial double up.
+     */
+    void init(){
         handRanks = new ArrayList<>();
         handSuits = new ArrayList<>();
-
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
+        if (extras != null) {   // Fetch input from main activity.
             cash = extras.getInt("cash");
-            winSum = extras.getInt("win");
+            winSum = extras.getInt("winSum");
             winHand = extras.getString("winHand");
             handRanks = extras.getIntegerArrayList("handRanks");
             handSuits = extras.getIntegerArrayList("handSuits");
         }
+        doubleUpPresenter = new DoubleUpPresenter( this, winSum );
+    }
+
+    /**
+     * Set the text views.
+     */
+    void setTextViews(){
         TextView cashView = (TextView) findViewById(R.id.cashViewDouble);
-        cashView.setText("CASH: $" + Integer.toString(cash));
+        cashView.setText( "CASH: $" + Integer.toString(cash) );
+        TextView winTextView = (TextView) findViewById(R.id.winHandText);
+        winTextView.setText(winHand + " wins $" + Integer.toString(winSum));
+        TextView doubleUpText = (TextView)findViewById( R.id.doubleUpQuestionText );
+        doubleUpText.setText( "Double up to $" + Integer.toString( winSum * 2 ) );
+    }
+
+    /**
+     * Shows the card of the dealer.
+     */
+    void showDealerCard(){
+        Card dealerCard = doubleUpPresenter.dealCards();
+        ImageView dealerView = (ImageView)findViewById( R.id.doubleCardViewOne );
+        dealerView.setImageResource( DECK[ dealerCard.getSuitRank() - 1 ][ dealerCard.getRank() - 1 ] );
+        for( int i = 1; i < 5; i++ ){
+            ImageView restViews = (ImageView)findViewById( CARD_FIELD[ i ] );
+            restViews.setImageResource( R.drawable.background_card );
+        }
+    }
+
+    /**
+     * Show card based on selection.
+     * @param cardPos the position of clicked card.
+     */
+    void showSelectedCard( int cardPos ){
+        Card chosenCard = doubleUpPresenter.getCard( cardPos );
+        ImageView chosenCardView = (ImageView)findViewById( CARD_FIELD[ cardPos ] );
+        chosenCardView.setImageResource( DECK[ chosenCard.getSuitRank() - 1 ][ chosenCard.getRank() - 1 ] );
+    }
+
+    /**
+     * Show new text after round has finished.
+     */
+    void setPickCardText(){
+        TextView winTextView = (TextView) findViewById(R.id.winHandText);
+        winTextView.setText( "Pick a card!!" );
+        TextView doubleUpText = (TextView)findViewById( R.id.doubleUpQuestionText );
+        doubleUpText.setText( "" );
+    }
+
+    /**
+     * Set the text after double up win.
+     */
+    void setWinText(){
+        TextView winTextView = (TextView) findViewById(R.id.winHandText);
+        winTextView.setText( "You won $" + doubleUpPresenter.getWin() + "!" );
+        TextView doubleUpText = (TextView)findViewById( R.id.doubleUpQuestionText );
+        doubleUpText.setText( "Double up to $" + Integer.toString( doubleUpPresenter.getWin() * 2 ) + "?" );
+    }
+
+    /**
+     * Check if player's card beats dealer's card.
+     */
+    void checkIfWin(){
+        if( doubleUpPresenter.checkWin() ){
+            setWinText();
+            showYesNoButtons();
+            cash += doubleUpPresenter.getWin();
+            TextView cashView = (TextView) findViewById(R.id.cashViewDouble);
+            cashView.setText( "CASH: $" + Integer.toString(cash) );
+        } else {
+            Intent returnIntent = getIntent();
+            setResult( Activity.RESULT_CANCELED, returnIntent );
+            finish();
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_double);
+        init();
+        setTextViews();
         setWinningHand();
 
         /**
@@ -73,6 +174,9 @@ public class DoubleUpActivity extends AppCompatActivity {
         noButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent returnOkIntent = getIntent();
+                returnOkIntent.putExtra( "win", doubleUpPresenter.getWin() );
+                setResult( Activity.RESULT_OK, returnOkIntent );
                 finish();
             }
         });
@@ -80,11 +184,52 @@ public class DoubleUpActivity extends AppCompatActivity {
         /**
          * Set onClickListener for the Yes Double button.
          */
-        final Button yesButton = (Button)findViewById(R.id.yesButton);
+        Button yesButton = (Button)findViewById(R.id.yesButton);
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                yesButton.setVisibility(View.INVISIBLE);
+                hideYesNoButtons();
+                setPickCardText();
+                showDealerCard();
+            }
+        });
+
+        /**
+         * Set onClickListener on the image views (cards).
+         */
+        ImageView secondCard = (ImageView)findViewById( R.id.doubleCardViewTwo );
+        secondCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSelectedCard( 1 );
+                checkIfWin();
+            }
+        });
+
+        ImageView thirdCard = (ImageView)findViewById( R.id.doubleCardViewThree );
+        thirdCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSelectedCard( 2 );
+                checkIfWin();
+            }
+        });
+
+        ImageView fourthCard = (ImageView)findViewById( R.id.doubleCardViewFour );
+        fourthCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSelectedCard( 3 );
+                checkIfWin();
+            }
+        });
+
+        ImageView fifthCard = (ImageView)findViewById( R.id.doubleCardViewFive );
+        fifthCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSelectedCard( 4 );
+                checkIfWin();
             }
         });
     }

@@ -1,7 +1,10 @@
 package com.vdthai.vdeopoker;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -11,7 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements Presenter.View {
+public class MainActivity extends AppCompatActivity implements Presenter.VDeoPokerView {
 
     private Presenter presenter;
     private List<ScoreBoard> handScores;
@@ -50,13 +53,17 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
         }
     }
 
+    public void startDoubleUpGame( Intent intent ){
+        startActivityForResult( intent, 1 );
+    }
+
     /**
      * Hold a card in a given position.
-     * @param _cardPos the card position to hold.
+     * @param cardPos the card position to hold.
      */
-    public void setHold( int _cardPos ){
-        presenter.holdCards( _cardPos );
-        TextView holdTxt = (TextView)findViewById(HOLD_FIELD[_cardPos]);
+    public void setHold( int cardPos ){
+        presenter.holdCards( cardPos );
+        TextView holdTxt = (TextView)findViewById(HOLD_FIELD[cardPos]);
         if( holdTxt.getText().equals("HOLD") ){
             holdTxt.setText("");
         } else {
@@ -85,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        presenter = new Presenter(this, this);
+        presenter = new Presenter( this, this );
 
         handScores = new ArrayList<>();
         ListView scoreListView = (ListView)findViewById( R.id.scoreListView );
@@ -107,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
                 }
                 // Check if round has ended.
                 presenter.checkRound();
-                updateCash();
             }
         });
 
@@ -175,6 +181,23 @@ public class MainActivity extends AppCompatActivity implements Presenter.View {
                 updateBet( presenter.betMax() );
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult( int requestCode, int resultCode, Intent data ){
+        Log.d("DEBUG", "Before _RequestCode");
+        if( requestCode == 1 ){
+            if( resultCode == Activity.RESULT_OK ){
+                Log.d("DEBUG", "RESULT_OK!");
+                int winAmount = data.getIntExtra( "win", 0 );
+                Log.d("DEBUG", "winAmount = "+Integer.toString(winAmount));
+                Log.d("DEBUG", "1 Presenter.getCash() = "+Integer.toString(presenter.getCash()));
+                presenter.setWinSum( winAmount );
+                Log.d("DEBUG", "2 Presenter.getCash() = "+Integer.toString(presenter.getCash()));
+                updateCash();
+                Log.d("DEBUG", "3 Presenter.getCash() = "+Integer.toString(presenter.getCash()));
+            }
+        }
     }
 
     /**

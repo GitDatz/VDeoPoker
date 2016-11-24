@@ -1,8 +1,6 @@
 package com.vdthai.vdeopoker;
 
-import android.content.Context;
 import android.content.Intent;
-
 import java.util.List;
 
 /**
@@ -10,17 +8,18 @@ import java.util.List;
  */
 
 class Presenter {
-    View view;
-    Context context;
+    VDeoPokerView view;
     Game game;
+    MainActivity mainActivity;
 
     /**
      * Constructor for the presenter.
-     * @param _view the view.
+     * @param mainActivity
+     * @param view
      */
-    Presenter( View _view, Context _context ){
-        view = _view;
-        context = _context;
+    Presenter( MainActivity mainActivity, VDeoPokerView view ){
+        this.mainActivity = mainActivity;
+        this.view = view;
         game = new Game();
     }
 
@@ -41,11 +40,11 @@ class Presenter {
     }
 
     /**
-     * Getter for the round's result.
-     * @return string of the hand. Empty if false.
+     * Setter for win amount.
+     * @param winSum the amount won.
      */
-    String getResultString(){
-        return game.getResultString();
+    void setWinSum( int winSum ){
+        game.setCash( winSum );
     }
 
     /**
@@ -79,14 +78,19 @@ class Presenter {
     void checkRound(){
         if( !game.isEndGame() ){
             view.clearHold();
+            view.updateCash();
         } else {
             if( game.checkHand() ){
-                Intent intent = new Intent(context, DoubleUpActivity.class);
+                Intent intent = new Intent(mainActivity, DoubleUpActivity.class);
                 // Send information to Double Up activity
                 intent.putExtra("cash", game.getCash());
+                intent.putExtra("winHand", game.getResultString());
+                intent.putExtra("winSum", game.getWinSum());
                 intent.putIntegerArrayListExtra("handRanks", game.getHandRanks());
                 intent.putIntegerArrayListExtra("handSuits", game.getHandSuits());
-                context.startActivity(intent);
+                //mainActivity.startActivity( intent );
+                //mainActivity.startActivityForResult( intent, 1 );
+                view.startDoubleUpGame( intent );
             }
         }
     }
@@ -94,7 +98,9 @@ class Presenter {
     /**
      * Makes this an interface for the View to implement.
      */
-    interface View {
+    interface VDeoPokerView {
         void clearHold();
+        void startDoubleUpGame( Intent intent );
+        void updateCash();
     }
 }
